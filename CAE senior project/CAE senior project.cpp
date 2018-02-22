@@ -33,6 +33,17 @@ void MyOnPaint(HDC hdc)
 	graphics.DrawLine(&pen, 0, 0, 200, 100);
 }
 
+void createBitmap(HDC hdc)
+{	
+	//to display bitmap, need Image and Graphics objects
+	Graphics graphics(hdc);
+	//pass name of file or pointer to a stream to Image constructor 
+	Image image(L"C:\\Users\\Katy\\Pictures\\checkerboard pattern.jpg");
+	//after create Image, pass its address to DrawImage method of Graphics object 
+	graphics.DrawImage(&image, 60, 10);
+	
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -169,8 +180,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
-			//call GDI+ test function
-			MyOnPaint(hdc);
+
+			//call GDI+ test function 
+				/*
+				MyOnPaint(hdc);
+				*/
+			//call create bitmap function
+			createBitmap(hdc);
             EndPaint(hWnd, &ps);
         }
         break;
