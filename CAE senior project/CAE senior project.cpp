@@ -99,18 +99,18 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
 
-    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.cbSize = sizeof(WNDCLASSEX); //WNDCLASSEX size in bytes
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;	//window class styles
+    wcex.lpfnWndProc    = WndProc;	//window procedure associated to this window, used for message processing
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CAESENIORPROJECT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);	//window cursor
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);		//window background brush color
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CAESENIORPROJECT);
-    wcex.lpszClassName  = szWindowClass;
+    wcex.lpszClassName  = szWindowClass;	//window class name
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
     return RegisterClassExW(&wcex);
@@ -182,9 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // TODO: Add any drawing code that uses hdc here...
 
 			//call GDI+ test function 
-				/*
-				MyOnPaint(hdc);
-				*/
+				//MyOnPaint(hdc);		
 			//call create bitmap function
 			createBitmap(hdc);
             EndPaint(hWnd, &ps);
