@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CAE senior project.h"
+#include <string>
 
 #define MAX_LOADSTRING 100
 
@@ -33,7 +34,7 @@ void MyOnPaint(HDC hdc)
 	graphics.DrawLine(&pen, 0, 0, 200, 100);
 }
 
-void createBitmap(HDC hdc)
+void createBitmapFromFile(HDC hdc)
 {	
 	//to display bitmap, need Image and Graphics objects
 	Graphics graphics(hdc);
@@ -43,6 +44,14 @@ void createBitmap(HDC hdc)
 	graphics.DrawImage(&image, 60, 10);
 	
 }
+
+Bitmap* createBitmapPixels(HDC hdc, int totalFOV_width, int totalFOV_height)
+{
+	Bitmap* bitmap = new Bitmap(totalFOV_width, totalFOV_height, 2498570);
+	return bitmap;
+}
+
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -156,6 +165,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//example inputs for white test pattern
+	std::string fileName; 
+
+
     switch (message)
     {
     case WM_COMMAND:
@@ -172,8 +185,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
+            } //end switch(wmId)
+        } //end case WM_COMMAND
         break;
     case WM_PAINT:
         {
@@ -184,18 +197,150 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//call GDI+ test function 
 				//MyOnPaint(hdc);		
 			//call create bitmap function
-			createBitmap(hdc);
+			//createBitmapFromFile(hdc);
+
+
+			/**************************************************************
+			/			CREATE TOTAL FOV BITMAP FROM PIXELS
+			***************************************************************/
+			int totalFOV_width = 400;	//NEED TO READ-IN LATER
+			int totalFOV_height = 400;	//NEED TO READ-IN LATER
+			Bitmap* totalFOV_Image = createBitmapPixels(hdc, totalFOV_width, totalFOV_height);
+			std::string testPattern = "grayscale";	//NEED TO READ-IN LATER			
+			Color pixelColor(255,0,0,0);	//default of black
+
+			/*****************************
+			/		GRAYSCALE
+			******************************/
+
+			if (testPattern == "grayscale")
+			{
+				int i = 0;
+				int j = 0;
+				int stripeSize = totalFOV_height / 10;
+				//1st stripe - white
+				for (int i = 0; i < stripeSize; i++)
+				{
+					ARGB argb = Color::MakeARGB(0, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 1st stripe for
+				} //end 1st stripe for
+
+				//2nd stripe
+				for (int i = stripeSize; i < stripeSize * 2; i++)
+				{
+					ARGB argb = Color::MakeARGB(28, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 2nd stripe for
+				} //end 2nd stripe for
+
+				//3rd stripe
+				for (int i = stripeSize * 2; i < stripeSize * 3; i++)
+				{
+					ARGB argb = Color::MakeARGB(56, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 3rd stripe for 
+				} //end 3rd stripe for 
+
+				//4th stripe
+				for (int i = stripeSize * 3; i < stripeSize * 4; i++)
+				{
+					ARGB argb = Color::MakeARGB(84, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 4th stripe for 
+				} //end 4th stripe for 
+
+				//5th stripe
+				for (int i = stripeSize * 4; i < stripeSize * 5; i++)
+				{
+					ARGB argb = Color::MakeARGB(112, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 5th stripe for
+				} //end 5th stripe for
+
+				//6th stripe
+				for (int i = stripeSize * 5; i < stripeSize * 6; i++)
+				{
+					ARGB argb = Color::MakeARGB(140, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 6th stripe for 
+				} //end 6th stripe for 
+
+				//7th stripe
+				for (int i = stripeSize * 6; i < stripeSize * 7; i++)
+				{
+					ARGB argb = Color::MakeARGB(168, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 7th stripe for 
+				} //end 7th stripe for 
+
+				//8th stripe
+				for (int i = stripeSize * 7; i < stripeSize * 8; i++)
+				{
+					ARGB argb = Color::MakeARGB(196, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 8th stripe for 
+				} //end 8th stripe for 
+
+				//9th stripe
+				for (int i = stripeSize * 8; i < stripeSize * 9; i++)
+				{
+					ARGB argb = Color::MakeARGB(224, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //9th stripe for 
+				} //end 9th stripe for 
+
+				//10th stripe - black
+				for (int i = stripeSize * 9; i < totalFOV_height; i++)
+				{
+					ARGB argb = Color::MakeARGB(255, 0, 0, 0);
+					for (int j = 0; j < totalFOV_width; j++)
+					{
+						pixelColor.SetValue(argb);
+						totalFOV_Image->SetPixel(j, i, pixelColor);
+					} //end 10th stripe for 
+				} //end 10th stripe for 
+				Graphics graphics(hdc);
+				graphics.DrawImage(&*totalFOV_Image, 0, 0);
+			} //end if test pattern grayscale
             EndPaint(hWnd, &ps);
-        }
+        } //end case WM_PAINT
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
-    }
+    } //end switch(message)
     return 0;
-}
+}  //end LRESULT CALLBACK
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

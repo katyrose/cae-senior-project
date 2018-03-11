@@ -148,12 +148,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAE senior project.h" />
+    <ClInclude Include="Channel.h" />
+    <ClInclude Include="Configuration.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CAE senior project.cpp" />
+    <ClCompile Include="ConfigDriver.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
