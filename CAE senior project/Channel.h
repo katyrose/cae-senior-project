@@ -1,6 +1,8 @@
 //Class file for the Channel class
 
 #include <fstream>
+#include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -13,8 +15,11 @@ private:
 	int location_v;
 
 public:
-	//Constructor & Destructor
+	//channel constructor from config file 
 	Channel(ifstream& in_file);
+	//channel constructor w/o config file for image generation
+	Channel();
+	//destructor
 	~Channel();
 
 	//Setters
@@ -37,7 +42,15 @@ public:
 
 };
 
-//Constructor & Destructor
+//Constructor w/o config file for image generation
+Channel::Channel() {
+	set_number(0);
+	set_fov_h(0);
+	set_fov_v(0);
+	set_location_h(0);
+	set_location_v(0);
+}
+
 Channel::Channel(ifstream& in_file) {
 	string in_string;
 	int peek;
@@ -73,7 +86,7 @@ Channel::Channel(ifstream& in_file) {
 
 		if (peek == '-' || peek == -1)
 			keep_reading = 0;
-	}	
+	}
 }
 
 Channel::~Channel() {

@@ -4,11 +4,12 @@
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
-#include "Configuration.h"
+//#include "Configuration.h"
 
 
 int main()
 {
+	/*
 	std::ifstream input_file;
 
 	Configuration* myConfig;
@@ -22,7 +23,8 @@ int main()
 	myConfig = new Configuration(input_file);
 	
 	myConfig->display_config_console();
-
-    return 0;
+	*/
+    return 0; 
 }
+
 

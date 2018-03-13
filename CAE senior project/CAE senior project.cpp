@@ -3,7 +3,10 @@
 
 #include "stdafx.h"
 #include "CAE senior project.h"
+#include "Channel.h"
 #include <string>
+#include <fstream>
+#include <iostream>
 
 #define MAX_LOADSTRING 100
 
@@ -45,12 +48,20 @@ void createBitmapFromFile(HDC hdc)
 	
 }
 
+//create bitmap pixel by pixel
 Bitmap* createBitmapPixels(HDC hdc, int totalFOV_width, int totalFOV_height)
 {
 	Bitmap* bitmap = new Bitmap(totalFOV_width, totalFOV_height, 2498570);
 	return bitmap;
 }
 
+
+//create bitmap pixel by pixel for channels
+Bitmap* createBitmapPixelsChannel(HDC hdc_Two, Channel channel)
+{
+	Bitmap* bitmap = new Bitmap(channel.get_fov_h(), channel.get_fov_v(), 2498570);
+	return bitmap;
+}
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -72,7 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_CAESENIORPROJECT, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    MyRegisterClass(hInstance); //window 1
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
@@ -98,7 +109,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
-
 //
 //  FUNCTION: MyRegisterClass()
 //
@@ -106,24 +116,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
+	
+	WNDCLASSEXW wcex;
 
-    wcex.cbSize = sizeof(WNDCLASSEX); //WNDCLASSEX size in bytes
+	wcex.cbSize = sizeof(WNDCLASSEX); //WNDCLASSEX size in bytes
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;	//window class styles
-    wcex.lpfnWndProc    = WndProc;	//window procedure associated to this window, used for message processing
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CAESENIORPROJECT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);	//window cursor
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);		//window background brush color
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CAESENIORPROJECT);
-    wcex.lpszClassName  = szWindowClass;	//window class name
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.style = CS_HREDRAW | CS_VREDRAW;	//window class styles
+	wcex.lpfnWndProc = WndProc;	//window procedure associated to this window, used for message processing
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CAESENIORPROJECT));
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);	//window cursor
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);		//window background brush color
+	wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_CAESENIORPROJECT);
+	wcex.lpszClassName = szWindowClass;	//window class name
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    return RegisterClassExW(&wcex);
+	return RegisterClassExW(&wcex);
 }
+
+
 
 //
 //   FUNCTION: InitInstance(HINSTANCE, int)
@@ -153,6 +166,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -165,12 +179,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	//example inputs for white test pattern
-	std::string fileName; 
-
-
+	HDC hdc;
+	PAINTSTRUCT ps;
+	SCROLLINFO si;
+	
     switch (message)
     {
+		
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -188,10 +203,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             } //end switch(wmId)
         } //end case WM_COMMAND
         break;
+	
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
+			PRECT prect;
+			
+
             // TODO: Add any drawing code that uses hdc here...
 
 			//call GDI+ test function 
@@ -203,8 +222,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/**************************************************************
 			/			CREATE TOTAL FOV BITMAP FROM PIXELS
 			***************************************************************/
-			int totalFOV_width = 400;	//NEED TO READ-IN LATER
-			int totalFOV_height = 400;	//NEED TO READ-IN LATER
+			int totalFOV_width = 700;	//NEED TO READ-IN LATER
+			int totalFOV_height = 500;	//NEED TO READ-IN LATER
 			Bitmap* totalFOV_Image = createBitmapPixels(hdc, totalFOV_width, totalFOV_height);
 			std::string testPattern = "grayscale";	//NEED TO READ-IN LATER			
 			Color pixelColor(255,0,0,0);	//default of black
@@ -212,7 +231,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			/*****************************
 			/		GRAYSCALE
 			******************************/
-
 			if (testPattern == "grayscale")
 			{
 				int i = 0;
@@ -327,20 +345,87 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						totalFOV_Image->SetPixel(j, i, pixelColor);
 					} //end 10th stripe for 
 				} //end 10th stripe for 
+
+				//convert degrees to pixels
+				int pixelsPerDegreeX = totalFOV_width / 180;
+				int pixelsPerDegreeY = totalFOV_height / 180;
+
+				//display channels
+				//create and set channel 1
+				Channel channel1;
+				channel1.set_fov_h(200);
+				channel1.set_fov_v(200);
+				channel1.set_location_h(45); //center, degrees
+				channel1.set_location_v(45); //center, degrees
+				channel1.set_number(1);
+
+				//channel 1 variable from get functions
+				int channel1_fov_h = channel1.get_fov_h();
+				int channel1_fov_v = channel1.get_fov_v();
+				int channel1_location_h = channel1.get_location_h(); //center, degrees
+				int channel1_location_v = channel1.get_location_v(); //center, degrees
+				int channel1_number = channel1.get_number();
+
+				//pixel location of center of channel 1
+				int channel1_loc_hPixels = pixelsPerDegreeX * channel1_location_h;
+				int channel1_loc_vPixels = pixelsPerDegreeY * channel1_location_v;
+
+				//pixel location of top left corner of channel 1
+				int channel1_TopLeftCornerX = channel1_loc_hPixels - channel1_fov_h / 2;
+				int channel1_TopLeftCornerY = channel1_loc_vPixels - channel1_fov_v / 2;
+
+				//create and set channel 2
+				Channel channel2;
+				channel2.set_fov_h(200);
+				channel2.set_fov_v(200);
+				channel2.set_location_h(135); //center, degrees
+				channel2.set_location_v(45); //center, degrees
+				channel2.set_number(2);
+
+				//channel 2 variable from get functions
+				int channel2_fov_h = channel2.get_fov_h();
+				int channel2_fov_v = channel2.get_fov_v();
+				int channel2_location_h = channel2.get_location_h(); //center, degrees
+				int channel2_location_v = channel2.get_location_v(); //center, degrees
+				int channel2_number = channel2.get_number();
+
+				//pixel location of center of channel 2
+				int channel2_loc_hPixels = pixelsPerDegreeX * channel2_location_h;
+				int channel2_loc_vPixels = pixelsPerDegreeY * channel2_location_v;
+
+				//pixel location of top left corner of channel 2
+				int channel2_TopLeftCornerX = channel2_loc_hPixels - channel2_fov_h / 2;
+				int channel2_TopLeftCornerY = channel2_loc_vPixels - channel2_fov_v / 2;
+
+				//clone channel bitmaps from total FOV image
+				Bitmap* channel1_image = totalFOV_Image->Clone(channel1_loc_hPixels, channel1_loc_vPixels, channel1_fov_h, channel1_fov_v, 2498570);
+				Bitmap* channel2_image = totalFOV_Image->Clone(channel2_loc_hPixels, channel2_loc_vPixels, channel2_fov_h, channel2_fov_v, 2498570);
+				
 				Graphics graphics(hdc);
-				graphics.DrawImage(&*totalFOV_Image, 0, 0);
-			} //end if test pattern grayscale
+				//display totalFOV image
+				//graphics.DrawImage(&*totalFOV_Image, 0, 0);
+
+				//display channels
+				graphics.DrawImage(channel1_image, channel1_loc_hPixels, channel1_loc_vPixels);
+				graphics.DrawImage(channel2_image, channel2_loc_hPixels, channel2_loc_vPixels);
+			} //end if test pattern grayscale	
+
+			 
             EndPaint(hWnd, &ps);
         } //end case WM_PAINT
         break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    } //end switch(message)
-    return 0;
+    
+case WM_DESTROY:
+	PostQuitMessage(0);
+	break;
+default:
+	return DefWindowProc(hWnd, message, wParam, lParam);
+	} //end switch(message)
+	return 0;
 }  //end LRESULT CALLBACK
+
+
+
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -361,3 +446,4 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
